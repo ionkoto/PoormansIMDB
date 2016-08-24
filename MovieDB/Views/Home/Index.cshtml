@@ -1,13 +1,12 @@
 ﻿@using MovieDB.Classes;
 @using MovieDB.Models;
 
-@model IEnumerable<Movie>
 
 @{
     ViewBag.Title = "Index";
 }
 
-@*@model List<MovieDB.Models.Movie>*@
+@model List<MovieDB.Models.Movie>
 <section class="row">
     @foreach (var movie in Model)
     {
@@ -15,7 +14,7 @@
             <h2 class="title">@movie.Title</h2>
             <div class="about">
                 Added 
-                @if (movie.Author == null)
+                @if (movie.Author != null)
                 {
                     @:by
                     <i>@movie.Author.FullName (@movie.Author.UserName)</i>
