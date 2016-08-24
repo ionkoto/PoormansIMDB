@@ -16,7 +16,7 @@ namespace MovieDB.Controllers
 
         public ActionResult Index()
         {
-            var movies = db.Movies.OrderByDescending(m => m.Date).Take(3);
+            var movies = db.Movies.Include(m => m.Author).OrderByDescending(m => m.Date).Take(3);
 
             return View(movies.ToList());
         }

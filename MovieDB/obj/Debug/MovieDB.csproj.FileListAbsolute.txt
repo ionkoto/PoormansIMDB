@@ -134,3 +134,4 @@ D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\bin\Microsoft.Owin.Security
 D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.dll
 D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.pdb
+D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.csprojResolveAssemblyReference.cache
