@@ -48,15 +48,17 @@ namespace MovieDB
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true
+               
+                
             };
 
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 1,
+                RequiredLength = 8,
                 RequireNonLetterOrDigit = false,
-                RequireDigit = false,
-                RequireLowercase = false,
+                RequireDigit = true,
+                RequireLowercase = true,
                 RequireUppercase = false,
             };
 

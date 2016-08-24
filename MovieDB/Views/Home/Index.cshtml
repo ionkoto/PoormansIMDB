@@ -3,7 +3,7 @@
 
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Home";
 }
 
 @model List<MovieDB.Models.Movie>
@@ -13,13 +13,7 @@
         <article class="post col-md-6">
             <h2 class="title">@movie.Title</h2>
             <div class="about">
-                Added 
-                @if (movie.Author != null)
-                {
-                    @:by
-                    <i>@movie.Author.FullName (@movie.Author.UserName)</i>
-                }
-                on <i>@movie.Date</i>
+                Added by <i>@movie.Author.FullName (@movie.Author.UserName)</i> on <i>@movie.Date</i>
             </div>
             <div class="body">@Html.Raw(movie.Body)</div>
         </article>
