@@ -7,7 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MovieDB.Models;
-
+using System.Security;
+using Microsoft.AspNet.Identity;
 
 namespace MovieDB.Controllers
 {
@@ -44,7 +45,7 @@ namespace MovieDB.Controllers
         {
             return View();
         }
-
+        
         // POST: Movies/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -66,21 +67,31 @@ namespace MovieDB.Controllers
         }
 
         // GET: Movies/Edit/5
-        [Authorize(Roles = "Administrators")]
+        [Authorize]
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Movie movie = db.Movies.Find(id);
-            if (movie == null)
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+
+            if(movie.Author_Id != user.Id && !User.IsInRole("Administrators"))
             {
-                return HttpNotFound();
+                throw new SecurityException("Unauthorized access!");
             }
-            var authors = db.Users.ToList();
-            ViewBag.Authors = authors;
-            return View(movie);
+            else
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                if (movie == null)
+                {
+                    return HttpNotFound();
+                }
+                var authors = db.Users.ToList();
+                ViewBag.Authors = authors;
+                return View(movie);
+            }
+          
         }
 
         // POST: Movies/Edit/5
@@ -88,47 +99,74 @@ namespace MovieDB.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrators")]
+        [Authorize]
 
         public ActionResult Edit([Bind(Include = "Id,Title,Body,Date, Author_Id")] Movie movie)
         {
-            if (ModelState.IsValid)
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+
+            if (movie.Author_Id != user.Id && !User.IsInRole("Administrators"))
             {
-                db.Entry(movie).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                throw new SecurityException("Unauthorized access!");
             }
-            return View(movie);
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    db.Entry(movie).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                return View(movie);
+            }
         }
 
         // GET: Movies/Delete/5
-        [Authorize(Roles = "Administrators")]
+        [Authorize]
 
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
             Movie movie = db.Movies.Find(id);
-            if (movie == null)
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+
+            if (movie.Author_Id != user.Id && !User.IsInRole("Administrators"))
             {
-                return HttpNotFound();
+                throw new SecurityException("Unauthorized access!");
             }
-            return View(movie);
+            else
+            {
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                if (movie == null)
+                {
+                    return HttpNotFound();
+                }
+                return View(movie);
+            }
         }
 
         // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrators")]
+        [Authorize]
 
         public ActionResult DeleteConfirmed(int id)
         {
             Movie movie = db.Movies.Find(id);
-            db.Movies.Remove(movie);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
+
+            if (movie.Author_Id != user.Id && !User.IsInRole("Administrators"))
+            {
+                throw new SecurityException("Unauthorized access!");
+            }
+            else
+            {
+                db.Movies.Remove(movie);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
         }
 
         protected override void Dispose(bool disposing)
