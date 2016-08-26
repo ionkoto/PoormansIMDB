@@ -105,24 +105,33 @@ namespace MovieDB.Controllers
         [ValidateAntiForgeryToken]
         [Authorize]
 
-        public ActionResult Edit([Bind(Include = "Id,Title,Body,Date, Author_Id")] Movie movie)
+        public ActionResult Edit([Bind(Include = "Id,Title,Body,Date,Author_Id")] Movie movie, HttpPostedFileBase image)
         {
             ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
-
-            if (movie.Author_Id != user.Id && !User.IsInRole("Administrators"))
+            
+            if (ModelState.IsValid)
             {
-                throw new SecurityException("Unauthorized access!");
-            }
-            else
-            {
-                if (ModelState.IsValid)
+                if (!User.IsInRole("Administrators"))
                 {
-                    db.Entry(movie).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return RedirectToAction("Index");
+                    movie.Author_Id = user.Id;
                 }
-                return View(movie);
+                if (image != null)
+                {
+                    var streamLength = image.InputStream.Length;
+                    var imageBytes = new byte[streamLength];
+                    image.InputStream.Read(imageBytes, 0, imageBytes.Length);
+                    movie.Image = imageBytes;
+                }
+                db.Entry(movie).State = EntityState.Modified;
+                if (image == null)
+                {
+                    db.Entry(movie).Property(x => x.Image).IsModified = false;
+                }
+                db.SaveChanges();
+                return RedirectToAction("Index");     
             }
+            return View(movie);
+            
         }
 
         // GET: Movies/Delete/5
