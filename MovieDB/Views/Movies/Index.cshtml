@@ -10,8 +10,23 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Add New Movie", "Create")
 </p>
+
+@using (Html.BeginForm())
+{
+    <br>
+    <p>
+        Find movie by name: @Html.TextBox("SearchTitle")
+        <input type="submit" value="Search" />
+    </p>
+    <p>
+        Find movie by description: @Html.TextBox("SearchBody")
+        <input type="submit" value="Search" />
+    </p>
+    <br>
+}
+
 <table class="table">
     <tr>
         <th>

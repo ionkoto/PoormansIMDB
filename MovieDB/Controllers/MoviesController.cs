@@ -23,7 +23,7 @@ namespace MovieDB.Controllers
         //    return View(moviesWithAuthors);
         //}
 
-        public ActionResult Index(string sortOrder)
+        public ActionResult Index(string sortOrder, string searchTitle, string searchBody)
         {
             ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
@@ -33,6 +33,17 @@ namespace MovieDB.Controllers
 
             var movies = from m in db.Movies.Include(mov => mov.Author).ToList()
                            select m;
+
+            if (!String.IsNullOrEmpty(searchTitle))
+            {
+                movies = movies.Where(m => m.Title.IndexOf(searchTitle,StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (!String.IsNullOrEmpty(searchBody))
+            {
+                movies = movies.Where(m => m.Body.IndexOf(searchBody, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+
             switch (sortOrder)
             {
                 case "name_desc":
