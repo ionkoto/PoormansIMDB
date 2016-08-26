@@ -52,10 +52,14 @@ namespace MovieDB.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Body")] Movie movie)
+        public ActionResult Create([Bind(Include = "Id,Title,Body")] Movie movie, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
+                var streamLength = image.InputStream.Length;
+                var imageBytes = new byte[streamLength];
+                image.InputStream.Read(imageBytes, 0, imageBytes.Length);
+                movie.Image = imageBytes;
                 movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
                 db.Movies.Add(movie);
               

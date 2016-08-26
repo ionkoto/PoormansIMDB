@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Drawing;
+using System.IO;
 
 namespace MovieDB.Classes
 {
@@ -14,5 +16,6 @@ namespace MovieDB.Classes
             var shortText = text.Substring(0, maxLength) + "...";
             return shortText;
         }
+
     }
 }
