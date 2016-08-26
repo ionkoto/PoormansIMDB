@@ -17,10 +17,46 @@ namespace MovieDB.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Movies
-        public ActionResult Index()
+        //public ActionResult Index()
+        //{
+        //    var moviesWithAuthors = db.Movies.Include(m => m.Author).ToList();
+        //    return View(moviesWithAuthors);
+        //}
+
+        public ActionResult Index(string sortOrder)
         {
-            var moviesWithAuthors = db.Movies.Include(m => m.Author).ToList();
-            return View(moviesWithAuthors);
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewBag.AuthorSortParm = sortOrder == "Author" ? "author_desc" : "Author";
+
+
+
+            var movies = from m in db.Movies.Include(mov => mov.Author).ToList()
+                           select m;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    movies = movies.OrderByDescending(m => m.Title);
+                    break;
+                case "Date":
+                    movies = movies.OrderBy(m => m.Date);
+                    break;
+                case "date_desc":
+                    movies = movies.OrderByDescending(m => m.Date);
+                    break;
+
+                case "Author":
+                    movies = movies.OrderBy(m => m.Author.Email.ToString());
+                    break;
+                case "author_desc":
+                    movies = movies.OrderByDescending(m => m.Author.Email.ToString());
+                    break;
+
+                default:
+                    movies = movies.OrderBy(m => m.Title);
+                    break;
+            }
+            return View(movies.ToList());
         }
 
         // GET: Movies/Details/5
