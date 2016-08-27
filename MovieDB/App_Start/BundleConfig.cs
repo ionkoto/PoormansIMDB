@@ -26,6 +26,13 @@ namespace MovieDB
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap-datetimepicker").Include(
+                "~/Scripts/moment.js", 
+                "~/Scripts/bootstrap-datetimepicker.js"));
+
+            bundles.Add(new StyleBundle("~/Content/bootstrap-datetimepicker").Include(
+                "~/Content/bootstrap-datetimepicker.min.css"));
         }
     }
 }

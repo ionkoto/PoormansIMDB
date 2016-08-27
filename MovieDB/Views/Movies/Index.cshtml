@@ -14,27 +14,39 @@
 <h2>Index</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Add New Movie", "Create")
 </p>
+
+@using (Html.BeginForm())
+{
+    <br>
+    <p>
+        Find movie by name: @Html.TextBox("SearchTitle")
+        <input type="submit" value="Search" />
+    </p>
+    <p>
+        Find movie by description: @Html.TextBox("SearchBody")
+        <input type="submit" value="Search" />
+    </p>
+    <br>
+}
+
 <table class="table">
     <tr>
         <th>
-            @*@Html.DisplayNameFor(model => model.Title)*@
-            Title
+            @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.NameSortParm })
         </th>
         <th>
-            @*@Html.DisplayNameFor(model => model.Body)*@
             Description
         </th>
         <th>
-            @*@Html.DisplayNameFor(model => model.Date)*@
-            Date
+            @Html.ActionLink("Date added", "Index", new { sortOrder = ViewBag.DateSortParm })
         </th>
         <th>
-            Added by
+            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm })
         </th>
         <th>
-            Actions
+           
         </th>
     </tr>
 
