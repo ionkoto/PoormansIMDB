@@ -1,4 +1,6 @@
-﻿@model MovieDB.Models.Movie
+﻿@using MovieDB.Classes;
+@using System.Drawing;
+@model MovieDB.Models.Movie
 
 @{
     ViewBag.Title = "Details";
@@ -35,6 +37,20 @@
         <dd>
             @Html.DisplayFor(model => model.Date)
         </dd>
+        <dt>
+            @*@Html.DisplayNameFor(model => model.Date)*@
+            ...
+        </dt>
+
+        <dd>
+            @{ if (Model.Image != null)
+                {
+                    <img src="data:image;base64,@System.Convert.ToBase64String(Model.Image)" width="182" height="270" />
+                }
+            }
+            
+        </dd>
+
 
     </dl>
 </div>
