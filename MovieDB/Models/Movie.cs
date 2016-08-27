@@ -33,7 +33,7 @@ namespace MovieDB.Models
         [ForeignKey ("Author_Id")]
         public ApplicationUser Author { get; set; }
 
-
+        public byte[] Image { get; set; }
 
     }
 }

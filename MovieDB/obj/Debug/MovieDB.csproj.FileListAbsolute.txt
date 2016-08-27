@@ -203,3 +203,4 @@ D:\GitHub\Programming Fundamentals\MovieDB\PoormansIMDB\MovieDB\bin\Microsoft.Ow
 D:\GitHub\Programming Fundamentals\MovieDB\PoormansIMDB\MovieDB\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 D:\GitHub\Programming Fundamentals\MovieDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.dll
 D:\GitHub\Programming Fundamentals\MovieDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.pdb
+D:\GitHub\Programming Fundamentals\MovieDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.csprojResolveAssemblyReference.cache
