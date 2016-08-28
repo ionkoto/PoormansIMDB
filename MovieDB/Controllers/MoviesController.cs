@@ -100,13 +100,21 @@ namespace MovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                var streamLength = image.InputStream.Length;
-                var imageBytes = new byte[streamLength];
-                image.InputStream.Read(imageBytes, 0, imageBytes.Length);
-                movie.Image = imageBytes;
-                movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
-                db.Movies.Add(movie);
-              
+                if (image != null)
+                {
+                    var streamLength = image.InputStream.Length;
+                    var imageBytes = new byte[streamLength];
+                    image.InputStream.Read(imageBytes, 0, imageBytes.Length);
+                    movie.Image = imageBytes;
+                    movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    db.Movies.Add(movie);
+                }
+                else
+                {
+                    movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    db.Movies.Add(movie);
+                }
+                   
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
