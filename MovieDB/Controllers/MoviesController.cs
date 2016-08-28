@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using MovieDB.Models;
 using System.Security;
 using Microsoft.AspNet.Identity;
+using PagedList;
 
 namespace MovieDB.Controllers
 {
@@ -16,36 +17,30 @@ namespace MovieDB.Controllers
     public class MoviesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
-        // GET: Movies
-        //public ActionResult Index()
-        //{
-        //    var moviesWithAuthors = db.Movies.Include(m => m.Author).ToList();
-        //    return View(moviesWithAuthors);
-        //}
-
-        public ActionResult Index(string sortOrder, string searchTitle, string searchBody)
+        
+        public ActionResult Index(string option, string search, int? pageNumber, string sort)
         {
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.AuthorSortParm = sortOrder == "Author" ? "author_desc" : "Author";
-
-
+            
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sort) ? "name_desc" : "";
+            ViewBag.DateSortParm = sort == "Date" ? "date_desc" : "Date";
+            ViewBag.AuthorSortParm = sort == "Author" ? "author_desc" : "Author";
 
             var movies = from m in db.Movies.Include(mov => mov.Author).ToList()
-                           select m;
-
-            if (!String.IsNullOrEmpty(searchTitle))
+                         select m;
+            if (option == "Title" && !String.IsNullOrEmpty(search))
             {
-                movies = movies.Where(m => m.Title.IndexOf(searchTitle,StringComparison.OrdinalIgnoreCase) >= 0);
+                movies = movies.Where(m => m.Title.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
             }
-            if (!String.IsNullOrEmpty(searchBody))
+            if (option== "Description Keyword" && !String.IsNullOrEmpty(search)) 
             {
-                movies = movies.Where(m => m.Body.IndexOf(searchBody, StringComparison.OrdinalIgnoreCase) >= 0);
+                movies = movies.Where(m => m.Body.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (option == "Author" && !String.IsNullOrEmpty(search))
+            {
+                movies = movies.Where(m => m.Author.Email.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
             }
 
-
-            switch (sortOrder)
+            switch (sort)
             {
                 case "name_desc":
                     movies = movies.OrderByDescending(m => m.Title);
@@ -68,7 +63,9 @@ namespace MovieDB.Controllers
                     movies = movies.OrderBy(m => m.Title);
                     break;
             }
-            return View(movies.ToList());
+            
+            return View(movies.ToList().ToPagedList(pageNumber ?? 1, 6));
+
         }
 
         // GET: Movies/Details/5
