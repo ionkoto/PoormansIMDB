@@ -10,6 +10,7 @@ using MovieDB.Models;
 using System.Security;
 using Microsoft.AspNet.Identity;
 using PagedList;
+using MovieDB.Extensions;
 
 namespace MovieDB.Controllers
 {
@@ -116,6 +117,7 @@ namespace MovieDB.Controllers
                 }
                    
                 db.SaveChanges();
+                this.AddNotification("A new movie was successfully added.", NotificationType.INFO);
                 return RedirectToAction("Index");
             }
 
@@ -179,6 +181,7 @@ namespace MovieDB.Controllers
                 {
                     db.Entry(movie).Property(x => x.Image).IsModified = false;
                 }
+                this.AddNotification("Your changes have been saved successfully.", NotificationType.INFO);
                 db.SaveChanges();
                 return RedirectToAction("Index");     
             }
@@ -230,6 +233,7 @@ namespace MovieDB.Controllers
             {
                 db.Movies.Remove(movie);
                 db.SaveChanges();
+                this.AddNotification("The movie was successfully DELETED.", NotificationType.INFO);
                 return RedirectToAction("Index");
             }
         }
