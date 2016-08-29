@@ -10,6 +10,7 @@ using MovieDB.Models;
 using System.Security;
 using Microsoft.AspNet.Identity;
 using PagedList;
+using MovieDB.Extensions;
 
 namespace MovieDB.Controllers
 {
@@ -100,14 +101,23 @@ namespace MovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
-                var streamLength = image.InputStream.Length;
-                var imageBytes = new byte[streamLength];
-                image.InputStream.Read(imageBytes, 0, imageBytes.Length);
-                movie.Image = imageBytes;
-                movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
-                db.Movies.Add(movie);
-              
+                if (image != null)
+                {
+                    var streamLength = image.InputStream.Length;
+                    var imageBytes = new byte[streamLength];
+                    image.InputStream.Read(imageBytes, 0, imageBytes.Length);
+                    movie.Image = imageBytes;
+                    movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    db.Movies.Add(movie);
+                }
+                else
+                {
+                    movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    db.Movies.Add(movie);
+                }
+                   
                 db.SaveChanges();
+                this.AddNotification("A new movie was successfully added.", NotificationType.INFO);
                 return RedirectToAction("Index");
             }
 
@@ -171,6 +181,7 @@ namespace MovieDB.Controllers
                 {
                     db.Entry(movie).Property(x => x.Image).IsModified = false;
                 }
+                this.AddNotification("Your changes have been saved successfully.", NotificationType.INFO);
                 db.SaveChanges();
                 return RedirectToAction("Index");     
             }
@@ -222,6 +233,7 @@ namespace MovieDB.Controllers
             {
                 db.Movies.Remove(movie);
                 db.SaveChanges();
+                this.AddNotification("The movie was successfully DELETED.", NotificationType.INFO);
                 return RedirectToAction("Index");
             }
         }
