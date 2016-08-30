@@ -35,5 +35,15 @@ namespace MovieDB.Models
 
         public byte[] Image { get; set; }
 
+        [Required]
+        public string Genre { get; set; }
+
+        [Required]
+        public Int32 Rating { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string Director { get; set; }
+
     }
 }

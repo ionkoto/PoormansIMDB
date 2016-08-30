@@ -12,6 +12,7 @@
     <h4>Movie</h4>
     <hr />
     <dl class="dl-horizontal">
+
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -21,8 +22,39 @@
         </dd>
 
         <dt>
-            @*@Html.DisplayNameFor(model => model.Body)*@
-            Description
+            @Html.DisplayNameFor(model => model.Director)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Director)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Genre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Rating (0/10)")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Rating)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Release Date")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Summary")
         </dt>
 
         <dd>
@@ -30,16 +62,8 @@
         </dd>
 
         <dt>
-            @*@Html.DisplayNameFor(model => model.Date)*@
-            Added on
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt>
-            @*@Html.DisplayNameFor(model => model.Date)*@
-            ...
+            @*@Html.DisplayNameFor(model => model.Image)*@
+            Poster
         </dt>
 
         <dd>
