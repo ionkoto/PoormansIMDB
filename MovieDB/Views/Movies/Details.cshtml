@@ -6,6 +6,15 @@
     ViewBag.Title = "Details";
 }
 
+<head>
+    <script type="text/javascript">
+ function showhide(id) {
+    var e = document.getElementById(id);
+    e.style.display = (e.style.display == 'block') ? 'none' : 'block';
+ }
+    </script>
+</head>
+
 <h2>Details</h2>
 
 <div>
@@ -74,10 +83,43 @@
             }
             
         </dd>
-
-
+        <br />
+        @if(Model.Comments.Any())
+        {
+            <dt>
+                Comments:
+            </dt>
+            foreach(var comment in Model.Comments)
+            {
+                <dd>
+                    @comment.Text
+                    @if(@comment.Author != null)
+                    {
+                        @: (by @comment.Author.FullName)
+                    }
+                    <p style="font-size:smaller">Added on: @comment.Date</p>
+                </dd>
+                <br />
+            }
+        }
+        <dt>
+            <button onclick="javascript:showhide('addComment')" class="btn btn-default">
+                Add Comment
+            </button>
+        </dt>
+        <dd>
+            <div id="addComment" style="display:none;">
+                @Html.Action("Create", "Comments", new { movieId = Model.Id })
+            </div>
+        </dd>
     </dl>
 </div>
+
+
+
+
+
+<br />
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
