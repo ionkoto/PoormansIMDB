@@ -7,7 +7,7 @@
 }
 
 @model List<MovieDB.Models.Movie>
-<section class="row">
+@*<section class="row">
     @foreach (var movie in Model)
     {
         <article class="post col-md-6">
@@ -18,4 +18,31 @@
             <div class="body">@Html.Raw(movie.Body)</div>
         </article>
     }
-</section>
+</section>*@
+
+<section class="row">
+        @foreach (var movie in Model)
+        {
+            <article class="post col-md-12">
+                <h2 class="title">@movie.Title</h2>
+                <div class="about">
+                    <b>Director: </b> <i>@movie.Director</i> &nbsp <b>Genre: </b><i>@movie.Genre</i>  &nbsp <b>Rating (0/10): </b> <i>@movie.Rating</i> &nbsp  <b>Release Date: </b><i>@movie.Date.ToShortDateString()</i> 
+                </div>
+                <div class="body">@Html.Raw(movie.Body)</div>
+            </article>
+            <dl class="post col-md-12">
+                <dt>
+                    @*@Html.DisplayNameFor(model => model.Image)*@
+                    Poster
+                </dt>
+
+                <dd>
+                    @{ if (movie.Image != null)
+                        {
+                            <img src="data:image;base64,@System.Convert.ToBase64String(movie.Image)" width="182" height="270" />
+                        }
+                    }
+                </dd>
+            </dl>
+      }
+    </section>

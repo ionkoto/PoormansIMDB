@@ -24,7 +24,9 @@ namespace MovieDB.Controllers
             
             ViewBag.NameSortParm = String.IsNullOrEmpty(sort) ? "name_desc" : "";
             ViewBag.DateSortParm = sort == "Date" ? "date_desc" : "Date";
-            ViewBag.AuthorSortParm = sort == "Author" ? "author_desc" : "Author";
+            ViewBag.DirectorSortParm = sort == "Director" ? "director_desc" : "Director";
+            ViewBag.GenreSortParm = sort == "Genre" ? "genre_desc" : "Genre";
+            ViewBag.RatingSortParm = sort == "Rating" ? "rating_desc" : "Rating";
 
             var movies = from m in db.Movies.Include(mov => mov.Author).ToList()
                          select m;
@@ -36,9 +38,17 @@ namespace MovieDB.Controllers
             {
                 movies = movies.Where(m => m.Body.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
             }
-            if (option == "Author" && !String.IsNullOrEmpty(search))
+            if (option == "Director" && !String.IsNullOrEmpty(search))
             {
-                movies = movies.Where(m => m.Author.Email.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+                movies = movies.Where(m => m.Director.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (option == "Genre" && !String.IsNullOrEmpty(search))
+            {
+                movies = movies.Where(m => m.Genre.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (option == "Rating (0/10)" && !String.IsNullOrEmpty(search))
+            {
+                movies = movies.Where(m => m.Rating == Int32.Parse(search));
             }
 
             switch (sort)
@@ -53,11 +63,25 @@ namespace MovieDB.Controllers
                     movies = movies.OrderByDescending(m => m.Date);
                     break;
 
-                case "Author":
-                    movies = movies.OrderBy(m => m.Author.Email.ToString());
+                case "Director":
+                    movies = movies.OrderBy(m => m.Director);
                     break;
-                case "author_desc":
-                    movies = movies.OrderByDescending(m => m.Author.Email.ToString());
+                case "director_desc":
+                    movies = movies.OrderByDescending(m => m.Director);
+                    break;
+
+                case "Genre":
+                    movies = movies.OrderBy(m => m.Genre);
+                    break;
+                case "genre_desc":
+                    movies = movies.OrderByDescending(m => m.Genre);
+                    break;
+
+                case "Rating":
+                    movies = movies.OrderBy(m => m.Rating);
+                    break;
+                case "rating_desc":
+                    movies = movies.OrderByDescending(m => m.Rating);
                     break;
 
                 default:
@@ -97,7 +121,7 @@ namespace MovieDB.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Body")] Movie movie, HttpPostedFileBase image)
+        public ActionResult Create([Bind(Include = "Id,Title,Body,Genre,Director,Rating")] Movie movie, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
@@ -159,7 +183,7 @@ namespace MovieDB.Controllers
         [ValidateAntiForgeryToken]
         [Authorize]
 
-        public ActionResult Edit([Bind(Include = "Id,Title,Body,Date,Author_Id")] Movie movie, HttpPostedFileBase image)
+        public ActionResult Edit([Bind(Include = "Id,Title,Body,Date,Author_Id,Genre,Director,Rating")] Movie movie, HttpPostedFileBase image)
         {
             ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
             
