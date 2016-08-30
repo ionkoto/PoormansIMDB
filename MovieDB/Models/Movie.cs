@@ -12,6 +12,7 @@ namespace MovieDB.Models
         public Movie()
         {
             this.Date = DateTime.Now;
+            this.Comments = new HashSet<Comment>();
         }
 
         [Key]
@@ -44,6 +45,8 @@ namespace MovieDB.Models
         [Required]
         [StringLength(100)]
         public string Director { get; set; }
+
+        public virtual ICollection<Comment> Comments { get; set; }
 
     }
 }
