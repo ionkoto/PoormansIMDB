@@ -9,6 +9,8 @@ using System.Web.Mvc;
 using MovieDB.Models;
 using System.Security;
 using Microsoft.AspNet.Identity;
+using PagedList;
+using MovieDB.Extensions;
 
 namespace MovieDB.Controllers
 {
@@ -16,36 +18,40 @@ namespace MovieDB.Controllers
     public class MoviesController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
-        // GET: Movies
-        //public ActionResult Index()
-        //{
-        //    var moviesWithAuthors = db.Movies.Include(m => m.Author).ToList();
-        //    return View(moviesWithAuthors);
-        //}
-
-        public ActionResult Index(string sortOrder, string searchTitle, string searchBody)
+        
+        public ActionResult Index(string option, string search, int? pageNumber, string sort)
         {
-            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewBag.DateSortParm = sortOrder == "Date" ? "date_desc" : "Date";
-            ViewBag.AuthorSortParm = sortOrder == "Author" ? "author_desc" : "Author";
-
-
+            
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sort) ? "name_desc" : "";
+            ViewBag.DateSortParm = sort == "Date" ? "date_desc" : "Date";
+            ViewBag.DirectorSortParm = sort == "Director" ? "director_desc" : "Director";
+            ViewBag.GenreSortParm = sort == "Genre" ? "genre_desc" : "Genre";
+            ViewBag.RatingSortParm = sort == "Rating" ? "rating_desc" : "Rating";
 
             var movies = from m in db.Movies.Include(mov => mov.Author).ToList()
-                           select m;
-
-            if (!String.IsNullOrEmpty(searchTitle))
+                         select m;
+            if (option == "Title" && !String.IsNullOrEmpty(search))
             {
-                movies = movies.Where(m => m.Title.IndexOf(searchTitle,StringComparison.OrdinalIgnoreCase) >= 0);
+                movies = movies.Where(m => m.Title.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
             }
-            if (!String.IsNullOrEmpty(searchBody))
+            if (option== "Description Keyword" && !String.IsNullOrEmpty(search)) 
             {
-                movies = movies.Where(m => m.Body.IndexOf(searchBody, StringComparison.OrdinalIgnoreCase) >= 0);
+                movies = movies.Where(m => m.Body.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (option == "Director" && !String.IsNullOrEmpty(search))
+            {
+                movies = movies.Where(m => m.Director.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (option == "Genre" && !String.IsNullOrEmpty(search))
+            {
+                movies = movies.Where(m => m.Genre.IndexOf(search, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            if (option == "Rating (0/10)" && !String.IsNullOrEmpty(search))
+            {
+                movies = movies.Where(m => m.Rating == Int32.Parse(search));
             }
 
-
-            switch (sortOrder)
+            switch (sort)
             {
                 case "name_desc":
                     movies = movies.OrderByDescending(m => m.Title);
@@ -57,18 +63,34 @@ namespace MovieDB.Controllers
                     movies = movies.OrderByDescending(m => m.Date);
                     break;
 
-                case "Author":
-                    movies = movies.OrderBy(m => m.Author.Email.ToString());
+                case "Director":
+                    movies = movies.OrderBy(m => m.Director);
                     break;
-                case "author_desc":
-                    movies = movies.OrderByDescending(m => m.Author.Email.ToString());
+                case "director_desc":
+                    movies = movies.OrderByDescending(m => m.Director);
+                    break;
+
+                case "Genre":
+                    movies = movies.OrderBy(m => m.Genre);
+                    break;
+                case "genre_desc":
+                    movies = movies.OrderByDescending(m => m.Genre);
+                    break;
+
+                case "Rating":
+                    movies = movies.OrderBy(m => m.Rating);
+                    break;
+                case "rating_desc":
+                    movies = movies.OrderByDescending(m => m.Rating);
                     break;
 
                 default:
                     movies = movies.OrderBy(m => m.Title);
                     break;
             }
-            return View(movies.ToList());
+            
+            return View(movies.ToList().ToPagedList(pageNumber ?? 1, 6));
+
         }
 
         // GET: Movies/Details/5
@@ -99,18 +121,27 @@ namespace MovieDB.Controllers
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Body")] Movie movie, HttpPostedFileBase image)
+        public ActionResult Create([Bind(Include = "Id,Title,Body,Genre,Director,Rating")] Movie movie, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
-                var streamLength = image.InputStream.Length;
-                var imageBytes = new byte[streamLength];
-                image.InputStream.Read(imageBytes, 0, imageBytes.Length);
-                movie.Image = imageBytes;
-                movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
-                db.Movies.Add(movie);
-              
+                if (image != null)
+                {
+                    var streamLength = image.InputStream.Length;
+                    var imageBytes = new byte[streamLength];
+                    image.InputStream.Read(imageBytes, 0, imageBytes.Length);
+                    movie.Image = imageBytes;
+                    movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    db.Movies.Add(movie);
+                }
+                else
+                {
+                    movie.Author = db.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+                    db.Movies.Add(movie);
+                }
+                   
                 db.SaveChanges();
+                this.AddNotification("A new movie was successfully added.", NotificationType.INFO);
                 return RedirectToAction("Index");
             }
 
@@ -152,7 +183,7 @@ namespace MovieDB.Controllers
         [ValidateAntiForgeryToken]
         [Authorize]
 
-        public ActionResult Edit([Bind(Include = "Id,Title,Body,Date,Author_Id")] Movie movie, HttpPostedFileBase image)
+        public ActionResult Edit([Bind(Include = "Id,Title,Body,Date,Author_Id,Genre,Director,Rating")] Movie movie, HttpPostedFileBase image)
         {
             ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
             
@@ -174,6 +205,7 @@ namespace MovieDB.Controllers
                 {
                     db.Entry(movie).Property(x => x.Image).IsModified = false;
                 }
+                this.AddNotification("Your changes have been saved successfully.", NotificationType.INFO);
                 db.SaveChanges();
                 return RedirectToAction("Index");     
             }
@@ -225,6 +257,7 @@ namespace MovieDB.Controllers
             {
                 db.Movies.Remove(movie);
                 db.SaveChanges();
+                this.AddNotification("The movie was successfully DELETED.", NotificationType.INFO);
                 return RedirectToAction("Index");
             }
         }

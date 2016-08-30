@@ -3,54 +3,66 @@
 @using MovieDB.Classes;
 @using Microsoft.AspNet.Identity;
 
-@model IEnumerable<Movie>
+@using PagedList;
+
+@using PagedList.Mvc;
+
+@model IPagedList<MovieDB.Models.Movie>
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
 
 @{
     ViewBag.Title = "Movies";
-
-
 }
 
-<h2>Index</h2>
+<h2>Movies</h2>
 
 <p>
     @Html.ActionLink("Add New Movie", "Create")
 </p>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index", "Movies", FormMethod.Get))
 {
     <br>
     <p>
-        Find movie by name: @Html.TextBox("SearchTitle")
-        <input type="submit" value="Search" />
+        <b>Search by:</b>&nbsp @Html.RadioButton("option","Title") <text>Title</text>&nbsp @Html.RadioButton("option", "Description Keyword") <text>Description Keyword</text>&nbsp @Html.RadioButton("option", "Director") <text>Director</text>&nbsp @Html.RadioButton("option", "Genre") <text>Genre</text> &nbsp @Html.RadioButton("option", "Rating (0/10)") <text>Rating</text>&nbsp @Html.TextBox("search")<input type="submit" name="submit" value="Search"/>
     </p>
-    <p>
-        Find movie by description: @Html.TextBox("SearchBody")
-        <input type="submit" value="Search" />
-    </p>
-    <br>
+   <br>
 }
 
 <table class="table">
     <tr>
         <th>
-            @Html.ActionLink("Title", "Index", new { sortOrder = ViewBag.NameSortParm })
+            @Html.ActionLink("Title", "Index", new { sort = ViewBag.NameSortParm, option = Request.QueryString["option"], search = Request.QueryString["search"] })
         </th>
         <th>
-            Description
+            Summary
         </th>
         <th>
-            @Html.ActionLink("Date added", "Index", new { sortOrder = ViewBag.DateSortParm })
+            @Html.ActionLink("Director", "Index", new { sort = ViewBag.DirectorSortParm, option = Request.QueryString["option"], search = Request.QueryString["search"] })
         </th>
         <th>
-            @Html.ActionLink("Author", "Index", new { sortOrder = ViewBag.AuthorSortParm })
+            @Html.ActionLink("Genre", "Index", new { sort = ViewBag.GenreSortParm, option = Request.QueryString["option"], search = Request.QueryString["search"] })
         </th>
         <th>
-           
+            @Html.ActionLink("Rating (0/10)", "Index", new { sort = ViewBag.RatingSortParm, option = Request.QueryString["option"], search = Request.QueryString["search"] })
+        </th>
+        <th>
+            @Html.ActionLink("Release Date", "Index", new { sort = ViewBag.DateSortParm, option = Request.QueryString["option"], search = Request.QueryString["search"] })
+        </th>
+        
+        <th>
         </th>
     </tr>
 
-@foreach (var item in Model) {
+@if (Model.Count() == 0)
+{
+    <tr><td colspan = "5"> <b> Sorry, no records match your request</b> </td></tr>
+}
+else
+{
+    foreach (var item in Model)
+    {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Title)
@@ -60,29 +72,52 @@
         </td>
 
         <td>
+            @Html.DisplayFor(modelItem => item.Director)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Genre)
+        </td>
+
+        <td>
+            @Html.DisplayFor(modelItem => item.Rating)
+        </td>
+
+        <td>
             @Html.DisplayFor(modelItem => item.Date)
         </td>
-        <td>
+        @*<td>
             @if (item.Author != null)
             {
                 @item.Author.UserName
-            } else
+            }
+            else
             {
                 <i>(no author)</i>
             }
-        </td>
+        </td>*@
         <td>
             @if (ViewContext.HttpContext.User.IsInRole("Administrators") || item.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
             {
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
             }
-            @Html.ActionLink("Details", "Details", new { id=item.Id })
+            @Html.ActionLink("Details", "Details", new { id = item.Id })
             @if (ViewContext.HttpContext.User.IsInRole("Administrators") || item.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
             {
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
             }
         </td>
     </tr>
-}
+}}
 
 </table>
+
+@{
+    if (Model.PageCount > 1)
+    {
+        @Html.PagedListPager(Model, pageNumber => Url.Action("Index", new {pageNumber, option = Request.QueryString["option"],
+       search = Request.QueryString["search"],
+       sort = Request.QueryString["sort"]
+   }))
+    }
+}
