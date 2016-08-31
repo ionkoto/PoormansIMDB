@@ -19,7 +19,7 @@ namespace MovieDB.Models
         public int Id { get; set; }
 
         [Required]
-        [StringLength(250)]
+        [StringLength(60, MinimumLength = 3)]
         public string Title { get; set; }
 
         [Required]
@@ -40,6 +40,7 @@ namespace MovieDB.Models
         public string Genre { get; set; }
 
         [Required]
+        [Range(0, 10)]
         public Int32 Rating { get; set; }
 
         [Required]

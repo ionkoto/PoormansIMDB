@@ -125,6 +125,7 @@ namespace MovieDB.Controllers
         {
             if (ModelState.IsValid)
             {
+                
                 if (image != null)
                 {
                     var streamLength = image.InputStream.Length;

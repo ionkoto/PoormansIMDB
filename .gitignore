@@ -1,2 +1,11 @@
 .vs/MovieDB/v14/.suo
 .vs/MovieDB/v14/.suo
+.vs/MovieDB/v14/.suo
+.vs/MovieDB/v14/.suo
+*.mdf
+MovieDB/bin/MovieDB.dll
+*.pdb
+MovieDB/obj/Debug/MovieDB.csproj.FileListAbsolute.txt
+MovieDB/obj/Debug/MovieDB.dll
+MovieDB/obj/Debug/MovieDB.csprojResolveAssemblyReference.cache
+MovieDB/obj/Debug/MovieDB.pdb
