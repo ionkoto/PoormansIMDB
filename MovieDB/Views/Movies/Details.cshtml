@@ -104,7 +104,7 @@
                     }
                     <p style="font-size:smaller">Added on: @comment.Date</p>
                 </dd>
-                <dt>
+                <dd>
                     
                     @if (comment.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
                     {
@@ -114,7 +114,7 @@
                     {
                         @Html.ActionLink("Delete", "Delete","Comments", new { id = comment.CommentId }, null)
                     }
-                </dt>
+                </dd>
                 <br />
             }
         }

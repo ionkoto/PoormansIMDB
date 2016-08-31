@@ -23,12 +23,13 @@
 <section class="row">
     @foreach (var movie in Model)
     {
-        <article class="post col-md-6">
+        <article class="post col-md-6" style="display:table-cell">
             <h3>@movie.Title</h3>
             <div class="about">
                 <b>Director: </b> <i>@movie.Director</i> &nbsp<br> <b>Genre: </b><i>@movie.Genre</i>  &nbsp <br><b>Rating (0/10): </b> <i>@movie.Rating</i> &nbsp  <br><b>Release Date: </b><i>@movie.Date.ToShortDateString()</i>
             </div>
             <div class="body"><b>Summary: </b> <i>@Html.Raw(movie.Body)</i></div>
+            <br />
             <div>
                 @{ if (movie.Image != null)
                     {
