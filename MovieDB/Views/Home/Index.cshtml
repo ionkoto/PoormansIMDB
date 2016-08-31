@@ -8,55 +8,41 @@
 
 @model List<MovieDB.Models.Movie>
 @*<section class="row">
-    @foreach (var movie in Model)
-    {
-        <article class="post col-md-6">
-            <h2 class="title">@movie.Title</h2>
-            <div class="about">
-                Added by <i>@movie.Author.FullName (@movie.Author.UserName)</i> on <i>@movie.Date</i>
-            </div>
-            <div class="body">@Html.Raw(movie.Body)</div>
-        </article>
-    }
-</section>*@
-
-<section class="row">
         @foreach (var movie in Model)
         {
             <article class="post col-md-6">
-                <h3>@movie.Title</h3>
+                <h2 class="title">@movie.Title</h2>
                 <div class="about">
-                    <b>Director: </b> <i>@movie.Director</i> &nbsp<br> <b>Genre: </b><i>@movie.Genre</i>  &nbsp <br><b>Rating (0/10): </b> <i>@movie.Rating</i> &nbsp  <br><b>Release Date: </b><i>@movie.Date.ToShortDateString()</i> 
+                    Added by <i>@movie.Author.FullName (@movie.Author.UserName)</i> on <i>@movie.Date</i>
                 </div>
-<<<<<<< HEAD
                 <div class="body">@Html.Raw(movie.Body)</div>
             </article>
-            <dl class="post col-md-12">
-                <dt>
-                    @*@Html.DisplayNameFor(model => model.Image)*@
-                </dt>
+        }
+    </section>*@
 
-                <dd>
-                    @{ if (movie.Image != null)
-                        {
-                            <img src="data:image;base64,@System.Convert.ToBase64String(movie.Image)" width="182" height="270" />
-=======
-                <div class="body"><b>Summary: </b> <i>@Html.Raw(movie.Body)</i></div>
-                
-                <div class="post">
-                    <b>Poster</b>
-                </div>
-                <div>
-                        @{ if (movie.Image != null)
-                            {
-                                <img src="data:image;base64,@System.Convert.ToBase64String(movie.Image)" width="182" height="270" />
-                            }
->>>>>>> refs/remotes/origin/master
-                        }
-                 </div>
-                            
-            </article>
-            
-      }
-    
-    </section>
+<section class="row">
+    @foreach (var movie in Model)
+    {
+        <article class="post col-md-6">
+            <h3>@movie.Title</h3>
+            <div class="about">
+                <b>Director: </b> <i>@movie.Director</i> &nbsp<br> <b>Genre: </b><i>@movie.Genre</i>  &nbsp <br><b>Rating (0/10): </b> <i>@movie.Rating</i> &nbsp  <br><b>Release Date: </b><i>@movie.Date.ToShortDateString()</i>
+            </div>
+            <div class="body"><b>Summary: </b> <i>@Html.Raw(movie.Body)</i></div>
+
+            <div class="post">
+                <b>Poster</b>
+            </div>
+            <div>
+                @{ if (movie.Image != null)
+                    {
+                        <img src="data:image;base64,@System.Convert.ToBase64String(movie.Image)" width="182" height="270" />
+                    }
+                }
+            </div>
+
+        </article>
+
+                    }
+
+</section>
