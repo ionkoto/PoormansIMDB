@@ -17,15 +17,17 @@
 
 <h2>Movies</h2>
 
-<p>
+<button class="btn btn-default">
     @Html.ActionLink("Add New Movie", "Create")
-</p>
+</button>
+    
+
 
 @using (Html.BeginForm("Index", "Movies", FormMethod.Get))
 {
     <br>
     <p>
-        <b>Search by:</b>&nbsp @Html.RadioButton("option","Title") <text>Title</text>&nbsp @Html.RadioButton("option", "Description Keyword") <text>Description Keyword</text>&nbsp @Html.RadioButton("option", "Director") <text>Director</text>&nbsp @Html.RadioButton("option", "Genre") <text>Genre</text> &nbsp @Html.RadioButton("option", "Rating (0/10)") <text>Rating</text>&nbsp @Html.TextBox("search")<input type="submit" name="submit" value="Search"/>
+        <b>Search by:</b>&nbsp @Html.RadioButton("option","Title") <text>Title</text>&nbsp @Html.RadioButton("option", "Description Keyword") <text>Description Keyword</text>&nbsp @Html.RadioButton("option", "Director") <text>Director</text>&nbsp @Html.RadioButton("option", "Genre") <text>Genre</text> &nbsp @Html.RadioButton("option", "Rating (0/10)") <text>Rating</text>&nbsp @Html.TextBox("search")<input type="submit" name="submit" value="Search" style="color:#ffffff"/>
     </p>
    <br>
 }
@@ -99,9 +101,10 @@ else
         <td>
             @if (ViewContext.HttpContext.User.IsInRole("Administrators") || item.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
             {
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) <br />
             }
             @Html.ActionLink("Details", "Details", new { id = item.Id })
+            <br />
             @if (ViewContext.HttpContext.User.IsInRole("Administrators") || item.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
             {
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
