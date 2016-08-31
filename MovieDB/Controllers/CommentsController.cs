@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MovieDB.Models;
+using Microsoft.AspNet.Identity;
 
 namespace MovieDB.Controllers
 {
@@ -37,6 +38,7 @@ namespace MovieDB.Controllers
         }
 
         // GET: Comments/Create
+        [Authorize]
         public ActionResult Create(int movieId)
         {
             var newComment = new Comment();
@@ -49,6 +51,7 @@ namespace MovieDB.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "CommentId,Text,MovieId")] Comment comment)
         {
@@ -86,12 +89,18 @@ namespace MovieDB.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "CommentId,Text,Date,Author_Id,MovieId")] Comment comment)
+
+        //public ActionResult Edit([Bind(Include = "Text")] Comment comment)
         {
+            ApplicationUser user = db.Users.Find(User.Identity.GetUserId());
             if (ModelState.IsValid)
             {
+                comment.Date = DateTime.Now;
                 db.Entry(comment).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                var movieId = comment.MovieId;
+                string redirectLink = "/Movies/Details/" + movieId.ToString();
+                return Redirect(redirectLink);
             }
             ViewBag.MovieId = new SelectList(db.Movies, "Id", "Title", comment.MovieId);
             return View(comment);
@@ -120,7 +129,9 @@ namespace MovieDB.Controllers
             Comment comment = db.Comments.Find(id);
             db.Comments.Remove(comment);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            var movieId = comment.MovieId;
+            string redirectLink = "/Movies/Details/" + movieId.ToString();
+            return Redirect(redirectLink);
         }
 
         protected override void Dispose(bool disposing)

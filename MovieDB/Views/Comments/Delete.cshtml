@@ -36,21 +36,21 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Author_Id)
+            @Html.DisplayName("Author")
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Author_Id)
+            @Html.DisplayFor(model => model.Author.Email)
         </dd>
 
     </dl>
 
     @using (Html.BeginForm()) {
         @Html.AntiForgeryToken()
-
+        
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            @Html.ActionLink("Back to Details", "Details", "Movies", new { id = Model.Movie.Id }, null)
         </div>
     }
 </div>
