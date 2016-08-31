@@ -487,6 +487,7 @@ namespace MovieDB.Controllers
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
         }
+        
         #endregion
     }
 }
