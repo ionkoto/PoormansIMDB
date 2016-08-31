@@ -1,4 +1,5 @@
-﻿@model MovieDB.Models.Comment
+﻿
+@model MovieDB.Models.Comment
 
 @{
     ViewBag.Title = "Edit";
@@ -15,7 +16,8 @@
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.CommentId)
-
+        
+        
         <div class="form-group">
             @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -23,8 +25,10 @@
                 @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        <div class="form-group">
+        @Html.HiddenFor(model => model.Date)
+        @Html.HiddenFor(model => model.Author_Id)
+        @Html.HiddenFor(model => model.MovieId)
+        @*<div class="form-group">
             @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
@@ -32,21 +36,22 @@
             </div>
         </div>
 
+
         <div class="form-group">
             @Html.LabelFor(model => model.Author_Id, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.EditorFor(model => model.Author_Id, new { htmlAttributes = new { @class = "form-control" } })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Author_Id, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Author_Id, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.Author, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.MovieId, "MovieId", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Movie.Title, "Title", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.DropDownList("MovieId", null, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.MovieId, "", new { @class = "text-danger" })
             </div>
-        </div>
+        </div>*@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -57,5 +62,5 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to Details", "Details", "Movies", new { id = Model.Movie.Id }, null)
 </div>
