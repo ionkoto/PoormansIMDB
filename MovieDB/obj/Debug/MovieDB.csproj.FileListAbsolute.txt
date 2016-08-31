@@ -211,3 +211,4 @@ D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\bin\PagedList.dll
 D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\bin\PagedList.Mvc.dll
 D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\bin\PagedList.xml
 D:\Visual Programs\PoorMansIMDB\PoormansIMDB\MovieDB\bin\PagedList.Mvc.xml
+D:\GitHub\Programming Fundamentals\MovieDB\PoormansIMDB\MovieDB\obj\Debug\MovieDB.csprojResolveAssemblyReference.cache

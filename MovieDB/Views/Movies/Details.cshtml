@@ -1,6 +1,10 @@
-﻿@using MovieDB.Classes;
+﻿
+@using MovieDB.Models;
+@using Microsoft.AspNet.Identity;
+@using MovieDB.Classes;
 @using System.Drawing;
 @model MovieDB.Models.Movie
+    
 
 @{
     ViewBag.Title = "Details";
@@ -84,6 +88,7 @@
             
         </dd>
         <br />
+
         @if(Model.Comments.Any())
         {
             <dt>
@@ -99,19 +104,38 @@
                     }
                     <p style="font-size:smaller">Added on: @comment.Date</p>
                 </dd>
+                <dt>
+                    
+                    @if (comment.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
+                    {
+                        @Html.ActionLink("Edit", "Edit","Comments", new { id = comment.CommentId}, null)
+                    }
+                    @if (ViewContext.HttpContext.User.IsInRole("Administrators") || comment.Author_Id == ViewContext.HttpContext.User.Identity.GetUserId())
+                    {
+                        @Html.ActionLink("Delete", "Delete","Comments", new { id = comment.CommentId }, null)
+                    }
+                </dt>
                 <br />
             }
         }
-        <dt>
-            <button onclick="javascript:showhide('addComment')" class="btn btn-default">
-                Add Comment
-            </button>
-        </dt>
-        <dd>
-            <div id="addComment" style="display:none;">
-                @Html.Action("Create", "Comments", new { movieId = Model.Id })
-            </div>
-        </dd>
+        @if (User.Identity.IsAuthenticated && User != null && User.Identity != null)
+        {
+            <dt>
+                <button onclick="javascript:showhide('addComment')" class="btn btn-default">
+                    Add Comment
+                </button>
+            </dt>
+            <dd>
+                <div id="addComment" style="display:none;">
+                    @Html.Action("Create", "Comments", new { movieId = Model.Id })
+                </div>
+            </dd>
+        } else
+        {
+            <dd>@Html.ActionLink("Register", "Register", "Account", new {}, null) or @Html.ActionLink("Log in", "Login", "Account", new { }, null) to add comment.</dd>
+        }
+
+
     </dl>
 </div>
 
